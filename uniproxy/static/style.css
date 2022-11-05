@@ -1,3 +1,15 @@
 .flash {
     color: #de5d41;
 }
+
+.danger {
+    background-color: #de5d41;
+}
+
+.online {
+    color:chartreuse;
+}
+
+.notonline {
+    color: #de5d41;
+}

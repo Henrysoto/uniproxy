@@ -25,8 +25,11 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import home
-    app.register_blueprint(home.bp)
+    from . import project
+    app.register_blueprint(project.bp)
     app.add_url_rule('/', endpoint='index')
+
+    from . import camera
+    app.register_blueprint(camera.bp)
 
     return app

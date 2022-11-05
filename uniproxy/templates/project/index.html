@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Projects{% endblock %}</h1>
+    {% if g.util %}
+    <a class="button-primary" href="{{ url_for('project.create') }}">New Project</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Location</th>
+                <th>Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+                <tr>
+                <td><a href="{{ url_for('project.devices', id=project['name']) }}">{{ project['name'] }}</a></td>
+                <td>{{ project['location'] }}</td>
+                <td>{{ project['created'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

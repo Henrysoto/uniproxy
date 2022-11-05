@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Edit "{{ camera['name'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <fieldset>
+            <label for="name">Camera name</label>
+            <input type="text" name="name" id="name" value="{{ camera['name'] }}">
+            <label for="ipaddress">IPv4 Address</label>
+            <input type="text" name="ipaddress" id="ipaddress" value="{{ camera['ip'] }}">
+            <label for="username">Username (leave blank if none)</label>
+            <input type="text" name="username" id="username" value="{{ camera['username'] }}">
+            <label for="password">Password (leave blank if none)</label>
+            <input type="text" name="password" id="password" value="{{ camera['password'] }}">
+            <input class="button-primary" type="submit" value="Update">
+        </fieldset>
+    </form>
+    <form action="{{ url_for('camera.delete', id=camera['id']) }}" method="post">
+        <fieldset>
+            <input class="button-primary" type="submit" value="Delete Camera" onclick="return confirm('Are you sure ?');">
+        </fieldset>
+    </form>
+{% endblock %}

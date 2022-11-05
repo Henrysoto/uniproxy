@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}New Camera{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <fieldset>
+            <label for="name">Camera name</label>
+            <input type="text" name="name" id="name">
+            <label for="ipaddress">IPv4 Address</label>
+            <input type="text" name="ipaddress" id="ipaddress">
+            <label for="username">Username (leave blank if none)</label>
+            <input type="text" name="username" id="username">
+            <label for="password">Password (leave blank if none)</label>
+            <input type="text" name="password" id="password">
+            <input class="button-primary" type="submit" value="Add Camera">
+        </fieldset>
+    </form>
+{% endblock %}
