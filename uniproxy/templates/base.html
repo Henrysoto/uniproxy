@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - UniProxy</title>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="column">
+                <nav>
+                    <h1>UniProxy</h1>
+                    <ul>
+                        {% if g.util %}
+                        <li><span>{{ g.util['utilisateur'] }}</span></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                        {% else %}
+                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="column">
+                <section class="content">
+                    <header>
+                        {% block header %}{% endblock %}
+                    </header>
+                    {% for message in get_flashed_messages() %}
+                    <h5><div class="flash">{{ message }}</div></h5>
+                    {% endfor %}
+                    {% block content %}{% endblock %}
+                </section>
+            </div>
+        
