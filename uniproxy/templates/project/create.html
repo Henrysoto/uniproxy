@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}New Project{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <fieldset>
+            <label for="name">Project name</label>
+            <input type="text" name="name" id="name">
+            <label for="location">Location</label>
+            <input type="text" name="location" id="location">
+            <input class="button-primary" type="submit" value="Add Camera">
+        </fieldset>
+    </form>
+{% endblock %}
