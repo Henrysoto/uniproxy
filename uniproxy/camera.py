@@ -7,6 +7,37 @@ from uniproxy.db import get_db
 
 bp = Blueprint('camera', __name__)
 
+def get_camera(id):
+    camera = get_db().execute(
+        'SELECT * FROM camera WHERE id = ?',
+        (id,)
+    ).fetchone()
+
+    if camera is None:
+        abort(404, f"Camera id {id} not found")
+    
+    return camera
+
+def get_cameras_from_project(id):
+    cameras = get_db().execute(
+        'SELECT * FROM camera WHERE project_id = ?', (id,)
+    ).fetchall()
+
+    if cameras is None:
+        abort(404, f"No cameras found for project with id: {id}")
+    
+    return cameras
+
+def get_project(id):
+    project = get_db().execute(
+        'SELECT * FROM project WHERE id = ?', (id,)
+    ).fetchone()
+
+    if project is None:
+        abort(404, f"No project found with id: {id}")
+
+    return project
+
 @bp.route('/p/<int:id>')
 def index(id):
     cameras = get_cameras_from_project(id)
@@ -41,37 +72,6 @@ def create(id):
             db.commit()
             return redirect(url_for('camera.index', id=project_id))
     return render_template('camera/create.html', id=id)
-
-def get_camera(id):
-    camera = get_db().execute(
-        'SELECT * FROM camera WHERE id = ?',
-        (id,)
-    ).fetchone()
-
-    if camera is None:
-        abort(404, f"Camera id {id} not found")
-    
-    return camera
-
-def get_cameras_from_project(id):
-    cameras = get_db().execute(
-        'SELECT * FROM camera WHERE project_id = ?', (id,)
-    ).fetchall()
-
-    if cameras is None:
-        abort(404, f"No cameras found for project with id: {id}")
-    
-    return cameras
-
-def get_project(id):
-    project = get_db().execute(
-        'SELECT * FROM project WHERE id = ?', (id,)
-    ).fetchone()
-
-    if project is None:
-        abort(404, f"No project found with id: {id}")
-
-    return project
 
 @bp.route('/p/<int:id>/update/<int:cid>', methods=('GET', 'POST'))
 @login_required
@@ -110,3 +110,8 @@ def delete(id, cid):
     db.execute('DELETE FROM camera WHERE id = ?', (cid,))
     db.commit()
     return redirect(url_for('camera.index', id=id))
+
+@bp.route('/p/<int:id>/refresh', methods=('GET',))
+@login_required
+def refresh(id):
+    pass

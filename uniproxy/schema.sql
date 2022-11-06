@@ -11,7 +11,9 @@ CREATE TABLE camera (
     username TEXT,
     password TEXT,
     online INTEGER,
-    url TEXT,
+    urlLogin TEXT,
+    urlJpeg TEXT,
+    cookie TEXT,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

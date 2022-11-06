@@ -20,7 +20,7 @@
         </fieldset>
         <fieldset>
             <input class="button-primary" type="submit" value="Update">
-            <a class="button button-primary" href="{{ url_for('camera.delete', id=id, cid=camera['id']) }}">Delete Camera</a>
+            <a class="button button-primary" href="{{ url_for('camera.delete', id=id, cid=camera['id']) }}" onclick="return confirm('Are you sure ?');">Delete Camera</a>
         </fieldset>
     </form>
 {% endblock %}
