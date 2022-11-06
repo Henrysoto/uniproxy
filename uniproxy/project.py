@@ -20,6 +20,16 @@ def index():
     
     return render_template('project/index.html', projects=projects)
 
+def get_project(id):
+    project = get_db().execute(
+        'SELECT * FROM project WHERE id = ?', (id,)
+    ).fetchone()
+
+    if project is None:
+        abort(404, f"No project found with id: {id}")
+
+    return project
+
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
@@ -43,5 +53,17 @@ def create():
                 (name, location)
             )
             db.commit()
-            return redirect(url_for('project.index'))
+            id = db.execute(
+                'SELECT MAX(id) FROM project'
+            ).fetchone()
+            return redirect(url_for('camera.index', id=id[0]))
     return render_template('project/create.html')
+
+@bp.route('/<int:id>/delete', methods=('GET',))
+@login_required
+def delete(id):
+    get_project(id)
+    db = get_db()
+    db.execute('DELETE FROM project WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('project.index'))

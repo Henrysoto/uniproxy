@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}New Camera{% endblock %}</h1>
+    <h2>{% block title %}New Camera{% endblock %}</h2>
+    <a class="button button-primary" href="{{ url_for('camera.index', id=id) }}">Back</a>
 {% endblock %}
 
 {% block content %}
+    <hr>
     <form method="post">
         <fieldset>
             <label for="name">Camera name</label>

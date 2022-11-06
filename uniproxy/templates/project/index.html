@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Projects{% endblock %}</h1>
+    <h2>{% block title %}Projects{% endblock %}</h2>
     {% if g.util %}
-    <a class="button-primary" href="{{ url_for('project.create') }}">New Project</a>
+    <a class="button button-primary" href="{{ url_for('project.create') }}">New Project</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
+    <hr>
     <table>
         <thead>
             <tr>
@@ -19,7 +20,7 @@
         <tbody>
             {% for project in projects %}
                 <tr>
-                <td><a href="{{ url_for('project.devices', id=project['name']) }}">{{ project['name'] }}</a></td>
+                <td><a href="{{ url_for('camera.index', id=project['id']) }}">{{ project['name'] }}</a></td>
                 <td>{{ project['location'] }}</td>
                 <td>{{ project['created'] }}</td>
                 </tr>

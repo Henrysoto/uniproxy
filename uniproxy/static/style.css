@@ -1,5 +1,21 @@
+body {
+    background-color: #edf0f5;
+}
+
+.unibar {
+    padding-top: 5rem;
+}
+
+.content {
+    padding-top: 15rem;
+}
+
+.logo {
+    text-decoration: none;
+}
+
 .flash {
-    color: #de5d41;
+    color: #cdd0d4;
 }
 
 .danger {

@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Edit "{{ camera['name'] }}"{% endblock %}</h1>
+    <h2>{% block title %}Edit "{{ camera['name'] }}"{% endblock %}</h2>
+    <a class="button button-primary" href="{{ url_for('camera.index', id=id) }}">Back</a>
 {% endblock %}
 
 {% block content %}
+    <hr>
     <form method="post">
         <fieldset>
             <label for="name">Camera name</label>
@@ -15,12 +17,10 @@
             <input type="text" name="username" id="username" value="{{ camera['username'] }}">
             <label for="password">Password (leave blank if none)</label>
             <input type="text" name="password" id="password" value="{{ camera['password'] }}">
-            <input class="button-primary" type="submit" value="Update">
         </fieldset>
-    </form>
-    <form action="{{ url_for('camera.delete', id=camera['id']) }}" method="post">
         <fieldset>
-            <input class="button-primary" type="submit" value="Delete Camera" onclick="return confirm('Are you sure ?');">
+            <input class="button-primary" type="submit" value="Update">
+            <a class="button button-primary" href="{{ url_for('camera.delete', id=id, cid=camera['id']) }}">Delete Camera</a>
         </fieldset>
     </form>
 {% endblock %}

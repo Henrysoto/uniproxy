@@ -7,12 +7,13 @@ from uniproxy.db import get_db
 
 bp = Blueprint('camera', __name__)
 
-@bp.route('/<int:id>/cameras')
+@bp.route('/p/<int:id>')
 def index(id):
     cameras = get_cameras_from_project(id)
-    return render_template('home/index.html', cameras=cameras)
+    project = get_project(id)
+    return render_template('camera/index.html', cameras=cameras, project=project)
 
-@bp.route('/<int:id>/create', methods=('GET', 'POST'))
+@bp.route('/p/<int:id>/create', methods=('GET', 'POST'))
 @login_required
 def create(id):
     if request.method == 'POST':
@@ -33,13 +34,13 @@ def create(id):
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO camera (ip, name, username, password)'
-                ' VALUES (?, ?, ?, ?)',
-                (ip, name, '' if not username else username, '' if not password else password)
+                'INSERT INTO camera (project_id, ip, name, username, password)'
+                ' VALUES (?, ?, ?, ?, ?)',
+                (project_id, ip, name, '' if not username else username, '' if not password else password)
             )
             db.commit()
-            return redirect(url_for('camera.index'))
-    return render_template('camera/create.html')
+            return redirect(url_for('camera.index', id=project_id))
+    return render_template('camera/create.html', id=id)
 
 def get_camera(id):
     camera = get_db().execute(
@@ -58,14 +59,24 @@ def get_cameras_from_project(id):
     ).fetchall()
 
     if cameras is None:
-        abort(404, f"No cameras found for this project")
+        abort(404, f"No cameras found for project with id: {id}")
     
     return cameras
 
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+def get_project(id):
+    project = get_db().execute(
+        'SELECT * FROM project WHERE id = ?', (id,)
+    ).fetchone()
+
+    if project is None:
+        abort(404, f"No project found with id: {id}")
+
+    return project
+
+@bp.route('/p/<int:id>/update/<int:cid>', methods=('GET', 'POST'))
 @login_required
-def update(id):
-    camera = get_camera(id)
+def update(id, cid):
+    camera = get_camera(cid)
 
     if request.method == 'POST':
         ip = request.form['ipaddress'].strip()
@@ -88,14 +99,14 @@ def update(id):
                 (ip, name, '' if not username else username, '' if not password else password, id)
             )
             db.commit()
-            return redirect(url_for('camera.index'))
-    return render_template('camera/update.html', camera=camera)
+            return redirect(url_for('camera.index', id=id))
+    return render_template('camera/update.html', id=id, camera=camera)
 
-@bp.route('/<int:id>/delete', methods=('GET',))
+@bp.route('/p/<int:id>/delete/<int:cid>', methods=('GET',))
 @login_required
-def delete(id):
-    get_camera(id)
+def delete(id, cid):
+    get_camera(cid)
     db = get_db()
-    db.execute('DELETE FROM camera WHERE id = ?', (id,))
+    db.execute('DELETE FROM camera WHERE id = ?', (cid,))
     db.commit()
-    return redirect(url_for('camera.index'))
+    return redirect(url_for('camera.index', id=id))
