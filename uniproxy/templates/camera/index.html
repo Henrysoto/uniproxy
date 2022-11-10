@@ -4,7 +4,7 @@
     <h2>{% block title %}Project {{ project['name'] }}{% endblock %}</h2>
     {% if g.util %}
     <a class="button button-primary" href="{{ url_for('camera.create', id=project['id']) }}">Add Camera</a>    
-    <a class="button button-primary" href="{{ url_for('camera.refresh', id=project['id']) }}">Refresh</a>
+    <a class="button button-primary" href="{{ url_for('camera.refresh_all', id=project['id']) }}">Refresh</a>
     <a class="button button-primary" href="{{ url_for('project.delete', id=project['id']) }}" onclick="return confirm('Are you sure ?');">Remove Project</a>    
     <a class="button button-primary" href="{{ url_for('project.index') }}">Back</a>
     {% endif %}
@@ -18,8 +18,8 @@
                 <th>Online</th>
                 <th>Name</th>
                 <th>IP</th>
-                <th>Url</th>
                 <th>Added</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -32,8 +32,8 @@
                 {% endif %}    
                 <td><a href="{{ url_for('camera.update', id=project['id'], cid=camera['id']) }}">{{ camera['name'] }}</a></td>
                 <td>{{ camera['ip'] }}</td>
-                <td>{{ camera['urlJpeg'] }}</td>
                 <td>{{ camera['created'] }}</td>
+                <td><a href="{{ url_for('camera.get_image', id=camera['id']) }}">Get Image</a></td>
                 </tr>
             {% endfor %}
         </tbody>

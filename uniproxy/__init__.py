@@ -7,6 +7,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'unidb.sqlite'),
+        SERVER_NAME="0.0.0.0:5000",
     )
 
     if test_config is None:

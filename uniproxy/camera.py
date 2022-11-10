@@ -1,5 +1,10 @@
+import requests
+import os
+import urllib.request
+from pathlib import Path
+
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, Response
 )
 from werkzeug.exceptions import abort
 from uniproxy.auth import login_required
@@ -38,7 +43,49 @@ def get_project(id):
 
     return project
 
-@bp.route('/p/<int:id>')
+def authenticate(camera):
+    url = f"http://{camera['ip']}/api/1.1/login"
+    payload = {"username": camera['username'], "password": camera['password']}
+    headers = {"Content-Type": "application/json"}
+    response = requests.request("POST", url, json=payload, headers=headers)
+    cookie = response.headers['Set-Cookie']
+
+    if cookie is not None:
+        db = get_db()
+        db.execute(
+            'UPDATE camera SET cookie = ? WHERE id = ?', (cookie, camera['id'],)
+        )
+        db.commit()
+        return True
+    return False
+
+@bp.route('/c/<int:id>/image', methods=('GET',))
+@login_required
+def get_image(id, secondtry=False):
+    db = get_db()
+    camera = db.execute(
+        'SELECT * FROM camera WHERE id = ?', (id,)
+    ).fetchone()
+
+    if camera['cookie'] is not None:
+        url = f"http://{camera['ip']}/snap.jpeg"
+        headers = {"Cookie": camera['cookie']}
+        try:
+            response = requests.request("GET", url, headers=headers, stream=True)
+            response = Response(response.raw)
+            response.headers['Content-Type'] = 'image/jpeg'
+            return response
+        except:
+            abort(404, f"Something went wrong with camera id: {camera['id']}")
+    else:
+        if not secondtry:
+            authenticate(camera)
+            get_image(camera['id'], True)
+        else:
+            abort(404, 'Could not retrieve camera image')
+
+
+@bp.route('/p/<int:id>', methods=('GET',))
 def index(id):
     cameras = get_cameras_from_project(id)
     project = get_project(id)
@@ -113,5 +160,33 @@ def delete(id, cid):
 
 @bp.route('/p/<int:id>/refresh', methods=('GET',))
 @login_required
-def refresh(id):
-    pass
+def refresh_all(id):
+    db = get_db()
+    cameras = db.execute(
+        'SELECT * FROM camera WHERE project_id = ?', (id,)
+    ).fetchall()
+
+    if cameras is None:
+        abort(404, f"No cameras found for project with id: {id}")
+    
+    for camera in cameras:
+        if camera['cookie'] is None:
+            if camera['username'] is not None:
+                if camera['password'] is not None:
+                    authenticate(camera)   
+        try:
+            urllib.request.urlopen(f"http://{camera['ip']}", timeout=2)
+            db.execute(
+                'UPDATE camera SET online = 1 WHERE id = ?',
+                (camera['id'],)
+            )
+            db.commit()
+        except:
+            db.execute(
+                'UPDATE camera SET online = 0 WHERE id = ?',
+                (camera['id'],)
+            )
+            db.commit()
+    return redirect(url_for('camera.index', id=id))
+
+

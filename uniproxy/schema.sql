@@ -6,13 +6,11 @@ DROP TABLE IF EXISTS util;
 CREATE TABLE camera (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
-    ip TEXT NOT NULL,
+    ip TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     username TEXT,
     password TEXT,
     online INTEGER,
-    urlLogin TEXT,
-    urlJpeg TEXT,
     cookie TEXT,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
