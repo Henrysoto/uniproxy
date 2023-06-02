@@ -7,6 +7,7 @@ UniProxy was created to fetch UniFi's cameras snapshot and stream it through HTT
 - User registration / login
 - Cameras are sorted by Projects (Create a project then add cameras to it)
 - Check cameras status (online or not)
+- Retrieve camera's JPEG stream through HTTP
 
 # Requirements
 - Cameras must be accessible from external IP or though a VPN. If you are running UniProxy on a local network with cameras on the same network, it will work. If you run UniProxy on an external server and try to reach camera from another destination, you will need to open ports on your router and provide your external IP to UniProxy when adding camera to your project.
