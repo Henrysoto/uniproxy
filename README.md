@@ -14,3 +14,15 @@ UniProxy was created to fetch UniFi's cameras snapshot and stream it through HTT
 # Dependencies
 - Flask
 - sqlite3
+
+# How-to
+Initialize sqlite database file:
+```
+flask --app uniproxy init-db
+```
+Start UniProxy instance:
+```
+flask --app uniproxy run
+```
+
+Make sure to edit `__init__.py` if you want UniProxy to be accessible from outside your local network.
